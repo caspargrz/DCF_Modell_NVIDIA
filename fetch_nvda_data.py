@@ -3,7 +3,7 @@ import yfinance as yf
 
 
 def main():
-    ticker_symbol = "AAPL"
+    ticker_symbol = "AAPL"  # <-- Hier beliebiges Tickersymbol eintragen (z. B. "NVDA", "AAPL", "MSFT", "TSLA")
     print(f"Ziehe Daten für {ticker_symbol} aus Yahoo Finance...")
 
     stock = yf.Ticker(ticker_symbol)
@@ -22,6 +22,8 @@ def main():
     info = stock.info
 
     metrics_dict = {
+        "Company Name": info.get("longName", ticker_symbol),
+        "Ticker": ticker_symbol.upper(),
         "Market Cap": info.get("marketCap"),
         "Enterprise Value": info.get("enterpriseValue"),
         "Trailing P/E": info.get("trailingPE"),
@@ -39,11 +41,12 @@ def main():
     )
     dcf_key_metrics.index.name = "Metric"
 
-    # Spaltennamen ticker-unabhängig auf Year_0, Year_1, ... normieren
+    
     for df in [financials, balance_sheet, cashflow]:
         df.columns = [f"Year_{i}" for i in range(len(df.columns))]
         df.index.name = "Metric"
 
+    
     output_filename = "NVDA_Raw_Data.xlsx"
     print(f"Exportiere Daten nach {output_filename}...")
 
@@ -54,7 +57,8 @@ def main():
         cashflow.to_excel(writer, sheet_name="Cashflow")
 
     print(
-        f"Erfolgreich abgeschlossen! Datei '{output_filename}' wurde erstellt."
+        f"Erfolgreich abgeschlossen! Datei '{output_filename}' wurde für"
+        f" {info.get('longName', ticker_symbol)} ({ticker_symbol.upper()}) erstellt."
     )
 
 
