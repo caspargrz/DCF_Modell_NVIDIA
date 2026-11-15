@@ -3,7 +3,7 @@ import yfinance as yf
 
 
 def main():
-    ticker_symbol = "NVDA"
+    ticker_symbol = "AAPL"
     print(f"Ziehe Daten für {ticker_symbol} aus Yahoo Finance...")
 
     stock = yf.Ticker(ticker_symbol)
@@ -21,7 +21,6 @@ def main():
 
     info = stock.info
 
-
     metrics_dict = {
         "Market Cap": info.get("marketCap"),
         "Enterprise Value": info.get("enterpriseValue"),
@@ -35,12 +34,17 @@ def main():
         "Beta": info.get("beta"),
     }
 
-
     dcf_key_metrics = pd.DataFrame.from_dict(
         metrics_dict, orient="index", columns=["Value"]
     )
+    dcf_key_metrics.index.name = "Metric"
 
-    output_filename = f"{ticker_symbol}_Raw_Data.xlsx"
+    # Spaltennamen ticker-unabhängig auf Year_0, Year_1, ... normieren
+    for df in [financials, balance_sheet, cashflow]:
+        df.columns = [f"Year_{i}" for i in range(len(df.columns))]
+        df.index.name = "Metric"
+
+    output_filename = "NVDA_Raw_Data.xlsx"
     print(f"Exportiere Daten nach {output_filename}...")
 
     with pd.ExcelWriter(output_filename, engine="openpyxl") as writer:
