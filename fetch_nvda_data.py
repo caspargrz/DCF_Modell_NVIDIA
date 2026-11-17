@@ -3,7 +3,7 @@ import yfinance as yf
 
 
 def main():
-    ticker_symbol = "AAPL"  # <-- Hier beliebiges Tickersymbol eintragen (z. B. "NVDA", "AAPL", "MSFT", "TSLA")
+    ticker_symbol = "AAPL"  
     print(f"Ziehe Daten für {ticker_symbol} aus Yahoo Finance...")
 
     stock = yf.Ticker(ticker_symbol)
